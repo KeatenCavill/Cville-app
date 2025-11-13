@@ -1,0 +1,524 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to Centerville</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-image: url('Overview.jpeg'); /* Replace with your image path */
+            background-repeat: no-repeat; /* Prevents the image from repeating */
+            background-size: cover; /* Scales the image to cover the entire background */
+            background-attachment: fixed; /* Keeps the background image fixed when scrolling */
+  
+            height: 100%;
+            min-height: 100%;
+        }
+
+        html {
+            height: 100%;
+        }
+
+        .container {
+            display: flex;
+            height: 100%;
+            min-height: 100%;
+        }
+
+        .sidebar {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .main-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            color: #718096;
+        }
+
+        .nav-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            flex-grow: 1;
+        }
+
+        .nav-button {
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #dd6b20, #c05621);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(66, 153, 225, 0.3);
+            text-align: left;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
+            background: linear-gradient(135deg, #dd6b20, #000000);
+        }
+
+        .nav-button.active {
+            background: linear-gradient(135deg, #000000, #000000);
+            box-shadow: 0 4px 15px rgba(56, 161, 105, 0.3);
+        }
+
+        .apply-button {
+            background: linear-gradient(135deg, #ed8936, #dd6b20);
+            box-shadow: 0 4px 15px rgba(237, 137, 54, 0.3);
+        }
+
+        .apply-button:hover {
+            background: linear-gradient(135deg, #dd6b20, #c05621);
+            box-shadow: 0 6px 20px rgba(237, 137, 54, 0.4);
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            display: none;
+            overflow-y: auto;
+        }
+
+        .content-box.active {
+            display: block;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .welcome-content {
+            text-align: center;
+            color: #2d3748;
+        }
+
+        .welcome-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #4299e1;
+        }
+
+        .welcome-content p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #718096;
+        }
+
+        .content-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #2d3748;
+        }
+
+        .apply-content {
+            text-align: center;
+        }
+
+        .apply-content h3 {
+            color: #ed8936;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+        }
+
+        .file-upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 1rem 0;
+            background: #f7fafc;
+            transition: all 0.3s ease;
+        }
+
+        .file-upload-area:hover {
+            border-color: #4299e1;
+            background: #ebf8ff;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #a0aec0;
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            color: #718096;
+            margin-bottom: 1rem;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-button {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .upload-button:hover {
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+            transform: translateY(-1px);
+        }
+
+        .file-info {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #e6fffa;
+            border-radius: 8px;
+            border-left: 4px solid #38a169;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .nav-buttons {
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            
+            .nav-button {
+                flex: 1;
+                min-width: calc(50% - 0.25rem);
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+            
+            .content-area {
+                padding: 1rem;
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <main class="container">
+   <nav class="sidebar">
+    <header class="header">
+     <h1 class="main-title" id="mainTitle">Application Portal</h1>
+     <p class="subtitle" id="subtitle">Navigate through sections</p>
+    </header>
+    <div class="nav-buttons"><button class="nav-button" id="btn1" onclick="showContent('content1', this)"> <span id="button1Text">About Us</span> </button> <button class="nav-button" id="btn2" onclick="showContent('content2', this)"> <span id="button2Text">Openings</span> </button> <button class="nav-button" id="btn3" onclick="showContent('content3', this)"> <span id="button3Text">Perks</span> </button> <button class="nav-button" id="btn4" onclick="showContent('content4', this)"> <span id="button4Text">Extra Curricular</span> </button> <button class="nav-button" id="btn5" onclick="showContent('content5', this)"> <span id="button5Text">Contacts</span> </button> <a href="Certified_Teaching_Application_Fillable.pdf"><button class="nav-button apply-button" id="btnApply"> <span id="applyButtonText">Apply Now</span> </button></a>
+    </div>
+   </nav>
+   <section class="content-area">
+    <div class="content-box active" id="welcome">
+     <div class="welcome-content">
+      <h2>Welcome to Centerville</h2>
+      <p>Select any button from the left sidebar to view detailed information. Each section contains important content to help guide you through the process.</p>
+      <p>When you're ready to proceed, click the "Apply Now" button to upload your documents.</p>
+     </div>
+    </div>
+    <div class="content-box" id="content1">
+     <div class="content-text" id="contentText1">
+        Centerville School is one of the finest Class C schools in the state of Montana. Located in a quiet rural setting 13 miles southwest of Great Falls, Centerville School serves the small towns of Sand Coulee, Tracy, Centerville, Stockett and surrounding areas. Our school enrollment is 227 students in grades K-12. Although the school may be small, the opportunities provided to the students in the areas of curriculum, technology, after-school programs and extra-curricular activities are numerous and varied. Our small class sizes, and a student/teacher ratio of 15 to 1, provide our students with the extra help and care that only a small school can provide. We are proud of our students, staff and community and take great pride in the excellent academic, athletic and activity programs we provide. We may be a rural school but we have a big city mentality towards education! <br> <br>
+        Community and school spirit adds to the deep sense of pride that students develop through attendance at our small school with big opportunities. Centerville’s identification with its mining heritage remains; a miner is the mascot, an ore wagon is displayed in front of the school, and photographs of several generations of ethnically diverse graduates (many from these early mining families) are displayed on the walls of the school. <br> <br>
+        In 2011, our School District implemented a 4-day school week with the purpose of increasing instructional time per class as well as improving student grades and attendance. The change has proved to be successful. Centerville teachers and staff are seeingan improvement in academic performance, attendance and attitude. There is increased student involvement in class as well as more time to complete work. The longer days are allowing teachers extra time to work with the students one-on-one. Attendance and test scores are up while behavioral problems are down. Centerville students receive 1,156 classroom hours per year which is 76 more hours than state minimum. The school classes run from 8 a.m. to 4 p.m. Monday through Thursday.
+     </div>
+    </div>
+    <div class="content-box" id="content2">
+     <div class="content-text" id="contentText2">
+        • Evening Maintenance <br>
+        • Fleet Maintenance <br>
+        • 2nd Grade Teacher <br>
+        • HS Business Teacher <br>
+        • JH English Teacher <br>
+        • Shop Teacher <br>
+        • Music Teacher <br>
+        • JH/HS Cheer Coaches <br> 
+        • Asst JH FB Coach <br> <br>
+        Applications are available at the school 
+        office. For further information, please 
+        see John Dubose, Superintendent or 
+        Mike Taylor, Principal.<br><br>
+        Equal Opportunity Employer
+     </div>
+    </div>
+    <div class="content-box" id="content3">
+     <div class="content-text" id="contentText3">
+        • 4 Day School Week <br>
+        • On-Site Daycare for a significantly reduced cost for staff <br>
+        • Small School <br>
+        • Family Environment <br>
+        • Competitive Pay and Benefits <br>
+        • Small Class Sizes <br>
+        • Close to Great Fall <br>
+     </div>
+    </div>
+    <div class="content-box" id="content4">
+     <div class="content-text" id="contentText4">
+      Centerville School has a tradition for 
+        excellence in sports with five State 
+        Championships in three different 
+        sports in a span of five years. Many of 
+        our students have received university 
+        athletic scholarships. In addition, 
+        students have an opportunity to 
+        become involved in student 
+        government and participate in 
+        numerous clubs and organizations.<br><br>
+    </div>
+    <div style="text-align: center;" >
+        <u>Extra-Curricular Activities</u> <br> <br>
+        • Football • Volleyball • <br>
+        • Basketball • Cross Country • <br>
+        • Cheerleading • Track • Golf • <br>
+        • Annual Staff • MBI Team Golf • <br>
+        • Student Council • BPA • <br>
+        • National Honor Society • <br>
+        • Pep Band • VICA • Close Up <br>
+     </div>
+    </div>
+    <div class="content-box" id="content5">
+     <div class="content-text" id="contentText5" style="text-align: center;">
+        Centerville Public Schools <br>
+        693 Stockett Road, Sand Coulee MT 59472<br>
+        (406) 736-5167<br>
+        www.centerville.k12.mt.us <br> <br>
+        Contact Superintendent John Dubose
+        johnd@centerville.k12.mt.us
+        or Principal Mike Taylor
+        miket@centerville.k12.mt.u
+      
+     </div>
+    </div>
+    <div class="content-box" id="apply">
+     <div class="apply-content">
+      <h3>Document Upload Center</h3>
+      <p>Ready to submit your application? Upload your documents using the area below.</p>
+      <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
+       <div class="upload-icon">
+        📄
+       </div>
+       <div class="upload-text">
+        Click here to select your document
+       </div><button type="button" class="upload-button">Choose File</button> <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(this)">
+      </div>
+      <div class="file-info" id="fileInfo"><strong>File Selected:</strong> <span id="fileName"></span><br><strong>Size:</strong> <span id="fileSize"></span><br><strong>Type:</strong> <span id="fileType"></span>
+      </div>
+     </div>
+    </div>
+   </section>
+  </main>
+  <script>
+        // Default configuration
+        const defaultConfig = {
+            main_title: "Document Portal",
+            subtitle: "Navigate through sections",
+            button_1_text: "Overview",
+            button_2_text: "Features", 
+            button_3_text: "Guidelines",
+            button_4_text: "Extra Curricular",
+            button_5_text: "Contacts",
+            apply_button_text: "Apply Now",
+            content_1: "This section provides a comprehensive overview of the document portal system. Here you'll find essential information about how to navigate through different sections, understand the requirements, and prepare for the application process. The portal is designed to be user-friendly and intuitive, guiding you step by step through each phase of your journey.",
+            content_2: "Explore the key features and capabilities of this interactive document system. This section highlights the main functionalities available to you, including document upload capabilities, real-time processing, secure file handling, and comprehensive review processes. Each feature is designed to streamline your experience and ensure efficient document management.",
+            content_3: "Important guidelines and best practices for using this document portal effectively. This section covers file format requirements, size limitations, security protocols, and step-by-step instructions for successful document submission. Please review these guidelines carefully to ensure smooth processing of your application.",
+            content_4: "Discover opportunities for extracurricular involvement and personal development. This section outlines various activities, clubs, organizations, and volunteer opportunities available to enhance your experience. Learn about leadership roles, community service projects, sports teams, academic clubs, and other enriching activities that can complement your academic journey and help you build valuable skills.",
+            content_5: "Important contact information and support resources. Here you'll find key personnel, department contacts, office hours, phone numbers, email addresses, and physical locations. Whether you need academic support, administrative assistance, or have questions about the application process, this section provides all the contact details you need to get in touch with the right people."
+        };
+
+        // Show content function with toggle functionality
+        function showContent(contentId, button) {
+            const isCurrentlyActive = button.classList.contains('active');
+            
+            // Hide all content boxes
+            const contentBoxes = document.querySelectorAll('.content-box');
+            contentBoxes.forEach(box => box.classList.remove('active'));
+            
+            // Remove active class from all buttons
+            const buttons = document.querySelectorAll('.nav-button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // If button was already active, show welcome page (home)
+            if (isCurrentlyActive) {
+                document.getElementById('welcome').classList.add('active');
+            } else {
+                // Show selected content
+                if (contentId === 'apply') {
+                    document.getElementById('apply').classList.add('active');
+                } else {
+                    document.getElementById(contentId).classList.add('active');
+                }
+                
+                // Add active class to clicked button
+                button.classList.add('active');
+            }
+            const contentArea = document.querySelector('.content-area')
+            if (contentArea){
+                contentArea.scrollTop = 0
+            }
+        }
+
+        // File upload handler
+        function handleFileUpload(input) {
+            const file = input.files[0];
+            if (file) {
+                const fileInfo = document.getElementById('fileInfo');
+                const fileName = document.getElementById('fileName');
+                const fileSize = document.getElementById('fileSize');
+                const fileType = document.getElementById('fileType');
+                
+                fileName.textContent = file.name;
+                fileSize.textContent = formatFileSize(file.size);
+                fileType.textContent = file.type || 'Unknown';
+                
+                fileInfo.style.display = 'block';
+                
+                // Create download link for the uploaded file
+                const url = URL.createObjectURL(file);
+                setTimeout(() => {
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = file.name;
+                    link.textContent = 'Download your uploaded file';
+                    link.style.display = 'block';
+                    link.style.marginTop = '1rem';
+                    link.style.color = '#4299e1';
+                    link.style.textDecoration = 'none';
+                    link.style.fontWeight = '600';
+                    
+                    fileInfo.appendChild(link);
+                }, 100);
+            }
+        }
+
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Element SDK configuration
+        async function onConfigChange(config) {
+            const mainTitle = document.getElementById('mainTitle');
+            const subtitle = document.getElementById('subtitle');
+            const button1Text = document.getElementById('button1Text');
+            const button2Text = document.getElementById('button2Text');
+            const button3Text = document.getElementById('button3Text');
+            const button4Text = document.getElementById('button4Text');
+            const button5Text = document.getElementById('button5Text');
+            const applyButtonText = document.getElementById('applyButtonText');
+            const contentText1 = document.getElementById('contentText1');
+            const contentText2 = document.getElementById('contentText2');
+            const contentText3 = document.getElementById('contentText3');
+            const contentText4 = document.getElementById('contentText4');
+            const contentText5 = document.getElementById('contentText5');
+
+            mainTitle.textContent = config.main_title || defaultConfig.main_title;
+            subtitle.textContent = config.subtitle || defaultConfig.subtitle;
+            button1Text.textContent = config.button_1_text || defaultConfig.button_1_text;
+            button2Text.textContent = config.button_2_text || defaultConfig.button_2_text;
+            button3Text.textContent = config.button_3_text || defaultConfig.button_3_text;
+            button4Text.textContent = config.button_4_text || defaultConfig.button_4_text;
+            button5Text.textContent = config.button_5_text || defaultConfig.button_5_text;
+            applyButtonText.textContent = config.apply_button_text || defaultConfig.apply_button_text;
+            contentText1.textContent = config.content_1 || defaultConfig.content_1;
+            contentText2.textContent = config.content_2 || defaultConfig.content_2;
+            contentText3.textContent = config.content_3 || defaultConfig.content_3;
+            contentText4.textContent = config.content_4 || defaultConfig.content_4;
+            contentText5.textContent = config.content_5 || defaultConfig.content_5;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [],
+                borderables: [],
+                fontEditable: undefined,
+                fontSizeable: undefined
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["main_title", config.main_title || defaultConfig.main_title],
+                ["subtitle", config.subtitle || defaultConfig.subtitle],
+                ["button_1_text", config.button_1_text || defaultConfig.button_1_text],
+                ["button_2_text", config.button_2_text || defaultConfig.button_2_text],
+                ["button_3_text", config.button_3_text || defaultConfig.button_3_text],
+                ["button_4_text", config.button_4_text || defaultConfig.button_4_text],
+                ["button_5_text", config.button_5_text || defaultConfig.button_5_text],
+                ["apply_button_text", config.apply_button_text || defaultConfig.apply_button_text],
+                ["content_1", config.content_1 || defaultConfig.content_1],
+                ["content_2", config.content_2 || defaultConfig.content_2],
+                ["content_3", config.content_3 || defaultConfig.content_3],
+                ["content_4", config.content_4 || defaultConfig.content_4],
+                ["content_5", config.content_5 || defaultConfig.content_5]
+            ]);
+        }
+
+        // Initialize Element SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99e0013993ec4783',t:'MTc2MzA1NTEwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
