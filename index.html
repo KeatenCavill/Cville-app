@@ -106,7 +106,8 @@
             padding: 2rem;
             display: flex;
             align-items: flex-start;
-            justify-content: center;
+            justify-content: flex-start;
+            gap: 2rem;
             overflow-y: auto;
         }
 
@@ -246,6 +247,105 @@
                 padding: 1rem;
             }
         }
+
+        /* Popup Background */
+    .apply-popup {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+    }
+
+    /* Popup Box */
+    .apply-popup-box {
+        background: white;
+        padding: 2rem;
+        border-radius: 14px;
+        text-align: center;
+        width: 350px;
+        box-shadow: 0 5px 30px rgba(0,0,0,0.3);
+    }
+
+    /* Choice Buttons */
+    .apply-choice {
+        width: 100%;
+        margin: 10px 0;
+        padding: 1rem;
+        font-size: 1.1rem;
+        background: linear-gradient(135deg, #ed8936, #dd6b20);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: 0.3s ease;
+    }
+
+    .apply-choice:hover {
+        background: linear-gradient(135deg, #dd6b20, #c05621);
+        transform: translateY(-2px);
+    }
+
+    /* Close Button */
+    .close-popup {
+        margin-top: 15px;
+        padding: 0.6rem 1rem;
+        background: #718096;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    /* Photo panel to the right of the text */
+.photo-panel {
+    flex: 1;
+    max-width: 380px;
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    align-self: center;
+}
+
+/* All photos stacked, only one visible at a time */
+.fade-photo {
+    position: absolute;
+    max-width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+    object-fit: cover;
+}
+
+/* The visible photo */
+.fade-photo.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Mobile: stack photo under text */
+@media (max-width: 768px) {
+    .content-area {
+        flex-direction: column;
+    }
+
+    .photo-panel {
+        max-width: 100%;
+        min-height: 200px;
+        margin-top: 1rem;
+    }
+}
+
+
     </style>
   <style>@view-transition { navigation: auto; }</style>
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
@@ -258,7 +358,11 @@
      <h1 class="main-title" id="mainTitle">Application Portal</h1>
      <p class="subtitle" id="subtitle">Navigate through sections</p>
     </header>
-    <div class="nav-buttons"><button class="nav-button" id="btn1" onclick="showContent('content1', this)"> <span id="button1Text">About Us</span> </button> <button class="nav-button" id="btn2" onclick="showContent('content2', this)"> <span id="button2Text">Openings</span> </button> <button class="nav-button" id="btn3" onclick="showContent('content3', this)"> <span id="button3Text">Perks</span> </button> <button class="nav-button" id="btn4" onclick="showContent('content4', this)"> <span id="button4Text">Extra Curricular</span> </button> <button class="nav-button" id="btn5" onclick="showContent('content5', this)"> <span id="button5Text">Contacts</span> </button> <a href="Certified_Teaching_Application_Fillable.pdf"><button class="nav-button apply-button" id="btnApply"> <span id="applyButtonText">Apply Now</span> </button></a>
+    <div class="nav-buttons"><button class="nav-button" id="btn1" onclick="showContent('content1', this)"> <span id="button1Text">About Us</span> </button> <button class="nav-button" id="btn2" onclick="showContent('content2', this)"> <span id="button2Text">Openings</span> </button> <button class="nav-button" id="btn3" onclick="showContent('content3', this)"> <span id="button3Text">Perks</span> </button> <button class="nav-button" id="btn4" onclick="showContent('content4', this)"> <span id="button4Text">Extra Curricular</span> </button> <button class="nav-button" id="btn5" onclick="showContent('content5', this)"> <span id="button5Text">Contacts</span> </button> 
+        <button class="nav-button apply-button" id="btnApply" onclick="openApplyBox()">
+    <span id="applyButtonText">Apply Now</span>
+</button>
+
     </div>
    </nav>
    <section class="content-area">
@@ -302,7 +406,7 @@
         • Family Environment <br>
         • Competitive Pay and Benefits <br>
         • Small Class Sizes <br>
-        • Close to Great Fall <br>
+        • Close to Great Falls <br>
      </div>
     </div>
     <div class="content-box" id="content4">
@@ -342,22 +446,45 @@
       
      </div>
     </div>
-    <div class="content-box" id="apply">
-     <div class="apply-content">
-      <h3>Document Upload Center</h3>
-      <p>Ready to submit your application? Upload your documents using the area below.</p>
-      <div class="file-upload-area" onclick="document.getElementById('fileInput').click()">
-       <div class="upload-icon">
-        📄
-       </div>
-       <div class="upload-text">
-        Click here to select your document
-       </div><button type="button" class="upload-button">Choose File</button> <input type="file" id="fileInput" class="file-input" accept=".pdf,.doc,.docx,.txt" onchange="handleFileUpload(this)">
-      </div>
-      <div class="file-info" id="fileInfo"><strong>File Selected:</strong> <span id="fileName"></span><br><strong>Size:</strong> <span id="fileSize"></span><br><strong>Type:</strong> <span id="fileType"></span>
-      </div>
-     </div>
+    
+        <!-- Photo panel on the right -->
+    <div class="photo-panel">
+
+
+        <!-- About Us photo -->
+        <img
+            id="photo-about"
+            class="fade-photo"
+            src="about_photo.jpg"
+            alt="Centerville campus"
+        >
+
+        <!-- Openings photo -->
+        <img
+            id="photo-openings"
+            class="fade-photo"
+            src="CentervilleOldLogo.png"
+            alt="Classroom or staff"
+        >
+
+        <!-- Perks photo -->
+        <img
+            id="photo-perks"
+            class="fade-photo"
+            src="CentervilleFront.png"
+            alt="Students and activities"
+        >
+
+        <!-- Extra Curricular photo -->
+        <img
+            id="photo-extra"
+            class="fade-photo"
+            src="CentervilleFootBall.png"
+            alt="Sports and clubs"
+        >
+
     </div>
+
    </section>
   </main>
   <script>
@@ -380,35 +507,85 @@
 
         // Show content function with toggle functionality
         function showContent(contentId, button) {
-            const isCurrentlyActive = button.classList.contains('active');
-            
-            // Hide all content boxes
-            const contentBoxes = document.querySelectorAll('.content-box');
-            contentBoxes.forEach(box => box.classList.remove('active'));
-            
-            // Remove active class from all buttons
-            const buttons = document.querySelectorAll('.nav-button');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            // If button was already active, show welcome page (home)
-            if (isCurrentlyActive) {
-                document.getElementById('welcome').classList.add('active');
-            } else {
-                // Show selected content
-                if (contentId === 'apply') {
-                    document.getElementById('apply').classList.add('active');
-                } else {
-                    document.getElementById(contentId).classList.add('active');
-                }
-                
-                // Add active class to clicked button
-                button.classList.add('active');
-            }
-            const contentArea = document.querySelector('.content-area')
-            if (contentArea){
-                contentArea.scrollTop = 0
-            }
+    const isCurrentlyActive = button.classList.contains('active');
+    
+    // Hide all content boxes
+    const contentBoxes = document.querySelectorAll('.content-box');
+    contentBoxes.forEach(box => box.classList.remove('active'));
+    
+    // Remove active class from all buttons
+    const buttons = document.querySelectorAll('.nav-button');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    let sectionForPhoto = 'welcome';
+
+    // If button was already active, show welcome page (home)
+    if (isCurrentlyActive) {
+        document.getElementById('welcome').classList.add('active');
+        sectionForPhoto = 'welcome';
+    } else {
+        // Show selected content
+        if (contentId === 'apply') {
+            document.getElementById('apply').classList.add('active');
+            sectionForPhoto = 'apply';
+        } else {
+            document.getElementById(contentId).classList.add('active');
+            sectionForPhoto = contentId;
         }
+        
+        // Add active class to clicked button
+        button.classList.add('active');
+    }
+
+    // Scroll to top of content area
+    const contentArea = document.querySelector('.content-area');
+    if (contentArea) {
+        contentArea.scrollTop = 0;
+    }
+
+    // Update the photo on the right
+    updatePhoto(sectionForPhoto);
+}
+
+
+    function updatePhoto(sectionId) {
+    const photos = document.querySelectorAll('.fade-photo');
+    photos.forEach(photo => photo.classList.remove('active'));
+
+    let photoId = 'photo-welcome'; // default
+
+    switch (sectionId) {
+        case 'content1':
+            photoId = 'photo-about';
+            break;
+        case 'content2':
+            photoId = 'photo-openings';
+            break;
+        case 'content3':
+            photoId = 'photo-perks';
+            break;
+        case 'content4':
+            photoId = 'photo-extra';
+            break;
+        case 'content5':
+            photoId = 'photo-contacts';
+            break;
+        // 'apply' could reuse perks photo, or you can add a special one
+        case 'apply':
+            photoId = 'photo-openings';
+            break;
+        case 'welcome':
+        default:
+            photoId = 'photo-welcome';
+            break;
+    }
+
+    const activePhoto = document.getElementById(photoId);
+    if (activePhoto) {
+        activePhoto.classList.add('active');
+    }
+}
+
 
         // File upload handler
         function handleFileUpload(input) {
@@ -510,6 +687,15 @@
             ]);
         }
 
+        function openApplyBox() {
+    document.getElementById("applyPopup").style.display = "flex";
+}
+
+        function closeApplyBox() {
+    document.getElementById("applyPopup").style.display = "none";
+}
+
+
         // Initialize Element SDK
         if (window.elementSdk) {
             window.elementSdk.init({
@@ -520,5 +706,22 @@
             });
         }
     </script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99e0013993ec4783',t:'MTc2MzA1NTEwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'99e0013993ec4783',t:'MTc2MzA1NTEwOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+
+<div id="applyPopup" class="apply-popup">
+    <div class="apply-popup-box">
+        <h2>Select Application Type</h2>
+
+        <button class="apply-choice" onclick="window.location.href='Certified_Teaching_Application_Fillable.pdf'">
+            Teacher Application
+        </button>
+
+        <button class="apply-choice" onclick="window.location.href='NonTeacher_Application.pdf'">
+            Non-Teacher Application
+        </button>
+
+        <button class="close-popup" onclick="closeApplyBox()">Close</button>
+    </div>
+</div>
+ </body>
 </html>
