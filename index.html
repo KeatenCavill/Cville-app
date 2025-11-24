@@ -15,7 +15,8 @@
             background-repeat: no-repeat;
             background-size: cover; 
             background-attachment: fixed; 
-            background-position: center center;
+            background-position: center center;   /* center the background */
+
             height: 100%;
             min-height: 100%;
         }
@@ -105,8 +106,8 @@
             flex: 1;
             padding: 2rem;
             display: flex;
-            align-items: flex-start;   /* text boxes stay aligned to top */
-            justify-content: flex-start;
+            align-items: flex-start;   /* text boxes aligned to top */
+            justify-content: center;
             gap: 2rem;
             overflow-y: auto;
         }
@@ -120,7 +121,8 @@
             width: 100%;
             max-width: 600px;
             display: none;
-            overflow-y: visible;
+            overflow-y: visible;   /* let page scroll, not the box */
+            order: 1;
         }
 
         .content-box.active {
@@ -220,41 +222,41 @@
             display: none;
         }
 
-        /* Photo panel on the right (desktop) */
+        /* Photo panel */
         .photo-panel {
             flex: 1;
             max-width: 380px;
-            min-height: 260px;
             display: flex;
-            align-items: center;
+            align-items: flex-end;
             justify-content: center;
-            position: relative;
-            align-self: center; /* center vertically next to tall text */
-            margin-left : 1rem;
+            order: 2;
         }
 
-        /* All photos stacked, only one visible at a time */
+        /* Photos as normal blocks, one visible */
         .fade-photo {
-            position: absolute;
             max-width: 100%;
+            width: 100%;
+            height: auto;
             border-radius: 16px;
-            border: 3px solid black;
+            border: 3px solid black;        /* black border */
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 0.6s ease, transform 0.6s ease;
             object-fit: cover;
+            display: none;                  /* hidden by default */
+            margin-bottom: 1.5rem;          /* gap to content below (mobile & desktop) */
         }
 
-        /* The visible photo */
         .fade-photo.active {
+            display: block;                 /* only active photo shows and takes space */
             opacity: 1;
             transform: translateY(0);
         }
 
-        /* Mobile menu toggle – hidden by default (desktop) */
+        /* Mobile menu toggle – hidden on desktop */
         .mobile-menu-toggle {
-            display: none;              /* hidden on desktop */
+            display: none;
             position: fixed;
             top: 1rem;
             left: 1rem;
@@ -319,19 +321,23 @@
             cursor: pointer;
         }
 
+        /* Desktop-only adjustment for photo gap */
+        @media (min-width: 769px) {
+            .photo-panel {
+                margin-left: 1.5rem;  /* gap between text and photo column */
+            }
+        }
+
         /* MOBILE ONLY */
         @media (max-width: 768px) {
-            /* Show the floating menu toggle button */
             .mobile-menu-toggle {
                 display: inline-block;
             }
 
-            /* Stack layout vertically on mobile */
             .container {
                 flex-direction: column;
             }
 
-            /* Sidebar becomes off-canvas on the side */
             .sidebar {
                 position: fixed;
                 top: 0;
@@ -344,7 +350,6 @@
                 z-index: 1000;
             }
 
-            /* When container has .sidebar-open, slide it in */
             .container.sidebar-open .sidebar {
                 transform: translateX(0);
             }
@@ -361,22 +366,18 @@
                 font-size: 0.9rem;
             }
 
-            /* Content area below, with some top padding to clear the toggle */
             .content-area {
                 padding: 4rem 1rem 1rem 1rem;
-                flex-direction: column;     /* text then photos */
+                flex-direction: column;
                 align-items: stretch;
                 gap: 1rem;
             }
 
-            /* Photos below the text on mobile */
             .photo-panel {
-                order: -1;
+                order: -1;            /* photos above text on mobile */
                 max-width: 100%;
-                min-height: 200px;
-                margin-bottom: 1rem;
-                align-self: stretch;
-                position: relative;
+                margin: 0 0 1rem 0;   /* only bottom gap on mobile */
+                justify-content: center;
             }
         }
     </style>
@@ -419,6 +420,46 @@
    </nav>
 
    <section class="content-area">
+    <!-- Photo panel (shared, photo changes by section) -->
+    <div class="photo-panel">
+        <img
+            id="photo-welcome"
+            class="fade-photo active"
+            src="Centerville.png"
+            alt="Welcome to Centerville"
+        >
+        <img
+            id="photo-about"
+            class="fade-photo"
+            src="about_photo.jpg"
+            alt="Centerville campus"
+        >
+        <img
+            id="photo-openings"
+            class="fade-photo"
+            src="CentervilleOldLogo.png"
+            alt="Classroom or staff"
+        >
+        <img
+            id="photo-perks"
+            class="fade-photo"
+            src="CentervilleFront.png"
+            alt="Students and activities"
+        >
+        <img
+            id="photo-extra"
+            class="fade-photo"
+            src="CentervilleFootBall.png"
+            alt="Sports and clubs"
+        >
+        <img
+            id="photo-contacts"
+            class="fade-photo"
+            src="about_photo.jpg"
+            alt="School office"
+        >
+    </div>
+
     <div class="content-box active" id="welcome">
      <div class="welcome-content">
       <h2>Welcome to Centerville</h2>
@@ -503,63 +544,10 @@
         miket@centerville.k12.mt.us
      </div>
     </div>
-    
-    <!-- Photo panel -->
-    <div class="photo-panel">
-        <!-- Default / Welcome photo -->
-        <img
-            id="photo-welcome"
-            class="fade-photo active"
-            src="Centerville.png"
-            alt="Welcome to Centerville"
-        >
-
-        <!-- About Us photo -->
-        <img
-            id="photo-about"
-            class="fade-photo"
-            src="about_photo.jpg"
-            alt="Centerville campus"
-        >
-
-        <!-- Openings photo -->
-        <img
-            id="photo-openings"
-            class="fade-photo"
-            src="CentervilleOldLogo.png"
-            alt="Classroom or staff"
-        >
-
-        <!-- Perks photo -->
-        <img
-            id="photo-perks"
-            class="fade-photo"
-            src="CentervilleFront.png"
-            alt="Students and activities"
-        >
-
-        <!-- Extra Curricular photo -->
-        <img
-            id="photo-extra"
-            class="fade-photo"
-            src="CentervilleFootBall.png"
-            alt="Sports and clubs"
-        >
-
-        <!-- Contacts photo (reuse campus for now) -->
-        <img
-            id="photo-contacts"
-            class="fade-photo"
-            src="about_photo.jpg"
-            alt="School office"
-        >
-    </div>
-
    </section>
   </main>
 
   <script>
-        // Default configuration
         const defaultConfig = {
             main_title: "Document Portal",
             subtitle: "Navigate through sections",
@@ -579,11 +567,9 @@
         function showContent(contentId, button) {
             const isCurrentlyActive = button.classList.contains('active');
             
-            // Hide all content boxes
             const contentBoxes = document.querySelectorAll('.content-box');
             contentBoxes.forEach(box => box.classList.remove('active'));
             
-            // Remove active class from all buttons
             const buttons = document.querySelectorAll('.nav-button');
             buttons.forEach(btn => btn.classList.remove('active'));
             
@@ -605,7 +591,6 @@
 
             updatePhoto(sectionForPhoto);
 
-            // Close sidebar after selecting a section on mobile
             if (window.innerWidth <= 768) {
                 const container = document.querySelector('.container');
                 if (container) {
@@ -618,7 +603,7 @@
             const photos = document.querySelectorAll('.fade-photo');
             photos.forEach(photo => photo.classList.remove('active'));
 
-            let photoId = 'photo-welcome'; // default
+            let photoId = 'photo-welcome';
 
             switch (sectionId) {
                 case 'content1':
@@ -648,7 +633,6 @@
             }
         }
 
-        // File upload handler
         function handleFileUpload(input) {
             const file = input.files[0];
             if (file) {
@@ -663,7 +647,6 @@
                 
                 fileInfo.style.display = 'block';
                 
-                // Create download link for the uploaded file
                 const url = URL.createObjectURL(file);
                 setTimeout(() => {
                     const link = document.createElement('a');
@@ -688,7 +671,6 @@
             }
         }
 
-        // Format file size
         function formatFileSize(bytes) {
             if (bytes === 0) return '0 Bytes';
             const k = 1024;
@@ -697,7 +679,6 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // Element SDK configuration
         async function onConfigChange(config) {
             const mainTitle = document.getElementById('mainTitle');
             const subtitle = document.getElementById('subtitle');
@@ -755,15 +736,6 @@
             ]);
         }
 
-        function openApplyBox() {
-            document.getElementById("applyPopup").style.display = "flex";
-        }
-
-        function closeApplyBox() {
-            document.getElementById("applyPopup").style.display = "none";
-        }
-
-        // Initialize Element SDK
         if (window.elementSdk) {
             window.elementSdk.init({
                 defaultConfig,
@@ -772,9 +744,9 @@
                 mapToEditPanelValues
             });
         }
-    </script>
+  </script>
 
- <script>
+  <script>
  (function(){
     function c(){
         var b=a.contentDocument||a.contentWindow.document;
@@ -805,10 +777,10 @@
         }
     }
  })();
- </script>
+  </script>
 
- <!-- Apply popup -->
- <div id="applyPopup" class="apply-popup">
+  <!-- Apply popup -->
+  <div id="applyPopup" class="apply-popup">
     <div class="apply-popup-box">
         <h2>Select Application Type</h2>
 
@@ -822,6 +794,16 @@
 
         <button class="close-popup" onclick="closeApplyBox()">Close</button>
     </div>
- </div>
+  </div>
+
+  <script>
+    function openApplyBox() {
+        document.getElementById("applyPopup").style.display = "flex";
+    }
+    function closeApplyBox() {
+        document.getElementById("applyPopup").style.display = "none";
+    }
+  </script>
+
  </body>
 </html>
