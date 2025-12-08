@@ -430,16 +430,16 @@
     <!-- Photo panel (shared, photo changes by section) -->
     <div class="photo-panel">
         <img
-            id="photo-welcome"
+           /* id="photo-welcome"
             class="fade-photo active"
             src="Centerville.png"
-            alt="Welcome to Centerville"
+            alt="Welcome to Centerville" */
         >
         <img
-            id="photo-about"
+            /* id="photo-about"
             class="fade-photo"
             src="about_photo.jpg"
-            alt="Centerville campus"
+            alt="Centerville campus" */
         >
         <img
             id="photo-openings"
@@ -460,10 +460,10 @@
             alt="Sports and clubs"
         >
         <img
-            id="photo-contacts"
+           /* id="photo-contacts"
             class="fade-photo"
             src="about_photo.jpg"
-            alt="School office"
+            alt="School office" */
         >
     </div>
 
@@ -486,19 +486,15 @@
 
     <div class="content-box" id="content2">
      <div class="content-text" id="contentText2">
-        • Evening Maintenance <br>
-        • Fleet Maintenance <br>
-        • 2nd Grade Teacher <br>
-        • HS Business Teacher <br>
-        • JH English Teacher <br>
         • Shop Teacher <br>
-        • Music Teacher <br>
-        • JH/HS Cheer Coaches <br> 
-        • Asst JH FB Coach <br> <br>
+        • Substitue <br>
+        • HS Head Football Coach <br>
+        • HS Assistant Football Coach (2) <br>
+        •
+        <br><br>
         Applications are available at the school 
         office. For further information, please 
-        see John Dubose, Superintendent or 
-        Mike Taylor, Principal.<br><br>
+        see Mike Taylor, Principal.<br><br>
         Equal Opportunity Employer
      </div>
     </div>
@@ -546,9 +542,7 @@
         693 Stockett Road, Sand Coulee MT 59472<br>
         (406) 736-5167<br>
         www.centerville.k12.mt.us <br> <br>
-        Contact Superintendent John Dubose<br>
-        johnd@centerville.k12.mt.us<br>
-        or Principal Mike Taylor<br>
+        Contact Principal Mike Taylor<br>
         miket@centerville.k12.mt.us
      </div>
     </div>
@@ -611,11 +605,11 @@
             const photos = document.querySelectorAll('.fade-photo');
             photos.forEach(photo => photo.classList.remove('active'));
 
-            let photoId = 'photo-welcome';
+            let photoId = null;
 
             switch (sectionId) {
                 case 'content1':
-                    photoId = 'photo-about';
+                    photoId = null;
                     break;
                 case 'content2':
                     photoId = 'photo-openings';
@@ -627,11 +621,11 @@
                     photoId = 'photo-extra';
                     break;
                 case 'content5':
-                    photoId = 'photo-contacts';
+                    photoId = null;
                     break;
                 case 'welcome':
                 default:
-                    photoId = 'photo-welcome';
+                    photoId = null;
                     break;
             }
 
