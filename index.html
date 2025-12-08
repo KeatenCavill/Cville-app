@@ -251,12 +251,14 @@
             display: block;
             opacity: 1;
             transform: translateY(0);
+        }
 
-                /* Hide all photos by default on startup */
-                .fade-photo {
-                    display: none !important;
-                    opacity: 0 !important;
-                }
+        /* Hide photos only during startup when the root has the class
+           `startup-hide-photos`. JavaScript will remove this class after
+           load so photos can show normally when `.fade-photo.active` is set. */
+        .startup-hide-photos .fade-photo {
+            display: none;
+            opacity: 0;
         }
 
         /* ---------- MOBILE MENU TOGGLE ---------- */
@@ -398,7 +400,7 @@
   <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
   <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
  </head>
- <body>
+ <body class="startup-hide-photos">
     <!-- Mobile toggle button -->
     <button class="mobile-menu-toggle" onclick="toggleSidebar()">
         ☰ Sections
@@ -436,18 +438,6 @@
     <!-- Photo panel (shared, photo changes by section) -->
     <div class="photo-panel">
         <img
-           /* id="photo-welcome"
-            class="fade-photo active"
-            src="Centerville.png"
-            alt="Welcome to Centerville" */
-        >
-        <img
-            /* id="photo-about"
-            class="fade-photo"
-            src="about_photo.jpg"
-            alt="Centerville campus" */
-        >
-        <img
             id="photo-openings"
             class="fade-photo"
             src="CentervilleOldLogo.png"
@@ -464,12 +454,6 @@
             class="fade-photo"
             src="CentervilleFootBall.png"
             alt="Sports and clubs"
-        >
-        <img
-           /* id="photo-contacts"
-            class="fade-photo"
-            src="about_photo.jpg"
-            alt="School office" */
         >
     </div>
 
@@ -637,6 +621,9 @@
 
             const activePhoto = document.getElementById(photoId);
             if (activePhoto) {
+                // Clear any startup inline styles so CSS can control visibility
+                activePhoto.style.display = '';
+                activePhoto.style.opacity = '';
                 activePhoto.classList.add('active');
             }
         }
@@ -753,24 +740,21 @@
             });
         }
 
-        // Initialize without showing any photo on startup
-        document.addEventListener('DOMContentLoaded', function() {
-        
-                    // Additional fallback for GitHub Pages
-                    function hidePhotosOnStartup() {
-                        const photos = document.querySelectorAll('.fade-photo');
-                        photos.forEach(photo => {
-                            photo.classList.remove('active');
-                            photo.style.display = 'none';
-                            photo.style.opacity = '0';
-                        });
-                    }
-                    hidePhotosOnStartup();
-                    setTimeout(hidePhotosOnStartup, 0);
-                    setTimeout(hidePhotosOnStartup, 100);
-            const photos = document.querySelectorAll('.fade-photo');
-            photos.forEach(photo => photo.classList.remove('active'));
-        });
+        // Hide photos during startup by keeping the root class; remove it
+        // shortly after load so `.fade-photo.active` can display normally.
+        // Ensure the startup hide class is removed from both <html> and <body>
+        document.documentElement.classList.add('startup-hide-photos');
+        if (document.body) document.body.classList.add('startup-hide-photos');
+
+        function removeStartupHide() {
+            document.documentElement.classList.remove('startup-hide-photos');
+            if (document.body) document.body.classList.remove('startup-hide-photos');
+        }
+
+        document.addEventListener('DOMContentLoaded', removeStartupHide);
+        // Fallback timers for hosts that fire events differently (GitHub Pages)
+        setTimeout(removeStartupHide, 50);
+        setTimeout(removeStartupHide, 250);
   </script>
 
   <script>
