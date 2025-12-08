@@ -251,6 +251,12 @@
             display: block;
             opacity: 1;
             transform: translateY(0);
+
+                /* Hide all photos by default on startup */
+                .fade-photo {
+                    display: none !important;
+                    opacity: 0 !important;
+                }
         }
 
         /* ---------- MOBILE MENU TOGGLE ---------- */
@@ -749,6 +755,19 @@
 
         // Initialize without showing any photo on startup
         document.addEventListener('DOMContentLoaded', function() {
+        
+                    // Additional fallback for GitHub Pages
+                    function hidePhotosOnStartup() {
+                        const photos = document.querySelectorAll('.fade-photo');
+                        photos.forEach(photo => {
+                            photo.classList.remove('active');
+                            photo.style.display = 'none';
+                            photo.style.opacity = '0';
+                        });
+                    }
+                    hidePhotosOnStartup();
+                    setTimeout(hidePhotosOnStartup, 0);
+                    setTimeout(hidePhotosOnStartup, 100);
             const photos = document.querySelectorAll('.fade-photo');
             photos.forEach(photo => photo.classList.remove('active'));
         });
