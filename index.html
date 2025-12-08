@@ -746,6 +746,12 @@
                 mapToEditPanelValues
             });
         }
+
+        // Initialize without showing any photo on startup
+        document.addEventListener('DOMContentLoaded', function() {
+            const photos = document.querySelectorAll('.fade-photo');
+            photos.forEach(photo => photo.classList.remove('active'));
+        });
   </script>
 
   <script>
